@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Data Visualization</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body {
+  font-family: 'Arial', sans-serif;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  align-items: center; /* Center items vertically */
+  justify-content: center; /* Center items horizontally */
+  min-height: 100vh;
+  background-image: linear-gradient(rgba(4, 9, 30, 0.7), rgba(4, 9, 30, 0.7)), url(./images/grapghbgpic.jpg);
+  background-position: center;
+  background-size: cover;
+  color: white;
+}
+
+.container {
+  text-align: center;
+  margin: 20px;
+}
+
+button {
+  margin-top: 10px;
+  padding: 8px 12px;
+  cursor: pointer;
+}
+
+canvas {
+  max-width: 100%;
+}
+
+    label {
+      margin-right: 10px;
+    }
+
+    /* button {
+      margin-top: 10px;
+      padding: 8px 12px;
+      cursor: pointer;
+      align-self: flex-start; 
+    } */
+
+    /* canvas {
+      max-width: 100%;
+    } */
+  </style>
+</head>
+
+<body>
+  <div class="pro">
+    <div class="container">
+      <h1>Data Visualization</h1>
+      <label for="fileInput">Upload Data File:</label>
+      <input type="file" id="fileInput" accept=".csv">
+      <button onclick="visualizeData()">Visualize Data</button>
+      <div class="chart-container">
+        <canvas id="barCanvas"></canvas>
+        <canvas id="pieCanvas"></canvas>
+      </div>
+    </div>
+
+    <!-- "Show Report" button -->
+    <button class="report" onclick="showReport()">Show Report</button>
+  </div>
+
+  <script>
+    function visualizeData() {
+      const fileInput = document.getElementById('fileInput');
+      const file = fileInput.files[0];
+
+      if (!file) {
+        alert('Please select a file.');
+        return;
+      }
+
+      const reader = new FileReader();
+
+      reader.onload = function (e) {
+        const data = e.target.result;
+        const dataArray = data.split(',').map(Number);
+
+        // Visualize data as a bar chart
+        createChart('Bar Chart', 'bar', dataArray);
+
+        // Visualize data as a pie chart
+        createChart('Pie Chart', 'pie', dataArray);
+      };
+
+      reader.readAsText(file);
+    }
+
+    function createChart(title, chartType, data) {
+      const ctx = document.getElementById(`${chartType}Canvas`).getContext('2d');
+
+      // Clear previous chart
+      if (window[`${chartType}Chart`]) {
+        window[`${chartType}Chart`].destroy();
+      }
+
+      const datasetLabels = Array.from({ length: data.length }, (_, i) => `Transformer ${i + 1}`);
+
+      window[`${chartType}Chart`] = new Chart(ctx, {
+        type: chartType,
+        data: {
+          labels: datasetLabels,
+          datasets: [{
+            label: title,
+            data: data,
+            backgroundColor: generateRandomColors(data.length),
+            borderColor: 'rgba(75, 192, 192, 1)',
+            borderWidth: 1
+          }]
+        },
+        options: {
+  plugins: {
+    legend: {
+      labels: {
+        color: 'white' // Legend text color
+      }
+    }
+  },
+  scales: {
+    x: {
+      title: {
+        display: true,
+        text: 'Machine',
+        color: 'white' // X-axis title color
+      },
+      ticks: {
+        color: 'white' // X-axis tick color
+      }
+    },
+    y: {
+      beginAtZero: true,
+      title: {
+        display: true,
+        text: 'Temperature',
+        color: 'white' // Y-axis title color
+      },
+      ticks: {
+        color: 'white' // Y-axis tick color
+      }
+    }
+  }
+}
+
+      });
+    }
+
+    function generateRandomColors(count) {
+      const colors = [];
+      for (let i = 0; i < count; i++) {
+        colors.push(`rgba(${Math.floor(Math.random() * 256)}, ${Math.floor(Math.random() * 256)}, ${Math.floor(Math.random() * 256)}, 0.7)`);
+      }
+      return colors;
+    }
+
+    // Function to show the report
+    function showReport() {
+      // Redirect to index2.html
+      window.location.href = 'index2.html';
+    }
+  </script>
+
+</body>
+
+</html>
